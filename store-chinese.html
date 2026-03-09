@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>혜쌤 Chinese · 매장 중국어 대화</title>
+<style>
+body{font-family:Arial, sans-serif;background:#f4f6fb;margin:0;padding:20px}
+.container{max-width:760px;margin:auto}
+header{text-align:center;margin-bottom:30px}
+h1{margin:0;font-size:32px}
+.subtitle{color:#666;margin-top:6px}
+.card{
+background:white;
+border-radius:16px;
+padding:22px;
+margin-bottom:14px;
+box-shadow:0 6px 14px rgba(0,0,0,0.06)
+}.chinese{
+font-size:26px;
+font-weight:700;
+margin-bottom:6px
+}.korean{
+color:#555;
+margin-bottom:10px
+}.controls{
+margin-top:10px
+}button{
+padding:10px 16px;
+margin-right:8px;
+border:none;
+border-radius:10px;
+font-size:14px;
+cursor:pointer
+}.play{background:#4CAF50;color:white}
+.repeat{background:#2196F3;color:white}
+.loop{background:#ff9800;color:white}
+footer{
+text-align:center;
+color:#888;
+margin-top:40px;
+font-size:13px
+}</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>혜쌤 Chinese</h1>
+<div class="subtitle">중국어 회화 트레이너 · 매장 중국어 대화</div>
+</header>
+<div id="sentences"></div>
+<footer>
+듣기 → 따라 말하기 → 반복 듣기
+</footer>
+</div>
+<script>
+const data=[
+{zh:"欢迎光临",ko:"어서 오세요"},
+{zh:"你好",ko:"안녕하세요"},
+{zh:"需要帮忙吗？",ko:"도와드릴까요"},
+{zh:"我可以看看这个吗？",ko:"이것 좀 볼 수 있을까요"},
+{zh:"当然可以",ko:"물론 가능합니다"},
+{zh:"您找什么产品？",ko:"어떤 제품을 찾으세요"},
+{zh:"我想看看这个",ko:"이것을 보고 싶어요"},
+{zh:"这边请",ko:"이쪽으로 오세요"},
+{zh:"好的谢谢",ko:"네 감사합니다"},
+{zh:"不客气",ko:"천만에요"},
+{zh:"这个多少钱？",ko:"이것 얼마인가요"},
+{zh:"一共三万韩元",ko:"총 3만 원입니다"},
+{zh:"可以便宜一点吗？",ko:"조금 할인될까요"},
+{zh:"现在有折扣",ko:"지금 할인 중입니다"},
+{zh:"太好了",ko:"좋네요"},
+{zh:"可以刷卡吗？",ko:"카드 결제 되나요"},
+{zh:"可以刷卡",ko:"카드 결제 가능합니다"},
+{zh:"也可以现金",ko:"현금도 가능합니다"},
+{zh:"需要发票吗？",ko:"영수증 필요하세요"},
+{zh:"需要谢谢",ko:"네 필요합니다"},
+{zh:"请在这里签名",ko:"여기에 서명해 주세요"},
+{zh:"好的",ko:"네"},
+{zh:"需要打包吗？",ko:"포장해 드릴까요"},
+{zh:"需要",ko:"네 부탁합니다"},
+{zh:"我帮您打包",ko:"제가 포장해 드리겠습니다"},
+{zh:"请稍等",ko:"잠시만 기다려 주세요"},
+{zh:"好的没问题",ko:"네 괜찮습니다"},
+{zh:"已经准备好了",ko:"준비되었습니다"},
+{zh:"谢谢",ko:"감사합니다"},
+{zh:"不客气",ko:"천만에요"},
+{zh:"您觉得怎么样？",ko:"어떠세요"},
+{zh:"很好",ko:"좋습니다"},
+{zh:"我再看看",ko:"좀 더 볼게요"},
+{zh:"可以慢慢看",ko:"천천히 보세요"},
+{zh:"需要我说明吗？",ko:"설명해 드릴까요"},
+{zh:"好的请说",ko:"네 설명해 주세요"},
+{zh:"这个质量很好",ko:"이 제품 품질이 좋습니다"},
+{zh:"很多客人买这个",ko:"많은 손님이 이것을 삽니다"},
+{zh:"听起来不错",ko:"좋아 보이네요"},
+{zh:"谢谢介绍",ko:"설명 감사합니다"},
+{zh:"一共多少钱？",ko:"총 얼마인가요"},
+{zh:"一共五万韩元",ko:"총 5만 원입니다"},
+{zh:"好的我买了",ko:"네 구매할게요"},
+{zh:"谢谢您的购买",ko:"구매 감사합니다"},
+{zh:"欢迎再来",ko:"다시 오세요"},
+{zh:"谢谢光临",ko:"방문 감사합니다"},
+{zh:"祝您一天愉快",ko:"좋은 하루 보내세요"},
+{zh:"再见",ko:"안녕히 가세요"},
+{zh:"慢走",ko:"조심히 가세요"},
+{zh:"下次再来",ko:"다음에 또 오세요"}
+];
+const container=document.getElementById("sentences");
+function speak(text){
+const msg=new SpeechSynthesisUtterance(text);
+msg.lang='zh-CN';
+speechSynthesis.speak(msg);
+}function repeatSpeak(text,count=3){
+let i=0;
+function loop(){
+if(i<count){
+const msg=new SpeechSynthesisUtterance(text);
+msg.lang='zh-CN';
+msg.onend=()=>{
+i++;
+loop();
+};
+speechSynthesis.speak(msg);
+}}loop();
+}data.forEach((item,i)=>{
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<div class="chinese">${i+1}. ${item.zh}</div>
+<div class="korean">${item.ko}</div>
+<div class="controls">
+<button class="play">듣기</button>
+<button class="repeat">다시 듣기</button>
+<button class="loop">3번 반복</button>
+</div>
+`;
+card.querySelector(".play").onclick=()=>speak(item.zh);
+card.querySelector(".repeat").onclick=()=>speak(item.zh);
+card.querySelector(".loop").onclick=()=>repeatSpeak(item.zh,3);
+container.appendChild(card);
+});
+</script>
+</body>
+</html>
