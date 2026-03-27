@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>혜쌤 Chinese · 병원 접수 중국어</title>
+
+<style>
+body{font-family:Arial, sans-serif;background:#f4f6fb;margin:0;padding:20px}
+.container{max-width:760px;margin:auto}
+header{text-align:center;margin-bottom:30px}
+h1{margin:0;font-size:32px}
+.subtitle{color:#666;margin-top:6px}
+
+.card{
+background:white;
+border-radius:16px;
+padding:22px;
+margin-bottom:14px;
+box-shadow:0 6px 14px rgba(0,0,0,0.06)
+}
+
+.chinese{
+font-size:26px;
+font-weight:700;
+margin-bottom:6px
+}
+
+.korean{
+color:#555;
+margin-bottom:10px
+}
+
+.controls{
+margin-top:10px
+}
+
+button{
+padding:10px 16px;
+margin-right:8px;
+border:none;
+border-radius:10px;
+font-size:14px;
+cursor:pointer
+}
+
+.play{background:#4CAF50;color:white}
+.repeat{background:#2196F3;color:white}
+.loop{background:#ff9800;color:white}
+
+footer{
+text-align:center;
+color:#888;
+margin-top:40px;
+font-size:13px
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>혜쌤 Chinese</h1>
+<div class="subtitle">바로 쓰는 중국어 · 병원 접수 중국어 50문장</div>
+</header>
+
+<div id="sentences"></div>
+
+<footer>
+듣기 → 따라 말하기 → 반복 듣기
+</footer>
+
+</div>
+
+<script>
+
+const data=[
+
+// 인사
+{zh:"你好",ko:"안녕하세요"},
+{zh:"欢迎光临",ko:"어서 오세요"},
+{zh:"请问哪里不舒服？",ko:"어디가 불편하세요"},
+
+// 예약
+{zh:"有预约吗？",ko:"예약하셨나요"},
+{zh:"我有预约",ko:"예약했어요"},
+{zh:"我没有预约",ko:"예약 안 했어요"},
+
+// 신분 확인
+{zh:"请给我看一下身份证",ko:"신분증 보여주세요"},
+{zh:"可以给我看一下护照吗？",ko:"여권 보여주시겠어요"},
+
+// 접수
+{zh:"请在这里登记",ko:"여기서 접수해 주세요"},
+{zh:"请填写这个表",ko:"이 서류 작성해 주세요"},
+{zh:"请写一下联系方式",ko:"연락처 작성해 주세요"},
+{zh:"请稍等一下",ko:"잠시만 기다려 주세요"},
+
+// 대기
+{zh:"请等候叫号",ko:"호출될 때까지 기다려 주세요"},
+{zh:"轮到您了",ko:"차례입니다"},
+{zh:"请到这边来",ko:"이쪽으로 오세요"},
+
+// 진료 안내
+{zh:"请进诊室",ko:"진료실로 들어가세요"},
+{zh:"医生马上来",ko:"의사 곧 옵니다"},
+
+// 기본 질문
+{zh:"哪里疼？",ko:"어디가 아프세요"},
+{zh:"什么时候开始的？",ko:"언제부터 시작됐나요"},
+{zh:"多久了？",ko:"얼마나 됐나요"},
+
+// 증상
+{zh:"我头疼",ko:"머리가 아파요"},
+{zh:"我肚子疼",ko:"배가 아파요"},
+{zh:"我咳嗽",ko:"기침이 나요"},
+{zh:"我发烧了",ko:"열이 있어요"},
+{zh:"我有点不舒服",ko:"좀 불편해요"},
+
+// 진행
+{zh:"需要检查",ko:"검사가 필요합니다"},
+{zh:"请去做检查",ko:"검사 받으세요"},
+{zh:"请跟我来",ko:"저를 따라오세요"},
+{zh:"检查结束了",ko:"검사 끝났습니다"},
+{zh:"请再等一下",ko:"조금만 더 기다려 주세요"},
+
+// 결과
+{zh:"医生会说明",ko:"의사가 설명해 드립니다"},
+{zh:"需要吃药",ko:"약 드셔야 합니다"},
+{zh:"一天吃三次",ko:"하루 세 번 드세요"},
+{zh:"饭后吃",ko:"식후에 드세요"},
+{zh:"有过敏吗？",ko:"알레르기 있으세요"},
+{zh:"没有",ko:"없어요"},
+
+// 수납
+{zh:"请到前台结账",ko:"수납해 주세요"},
+{zh:"可以刷卡",ko:"카드 가능합니다"},
+{zh:"也可以现金",ko:"현금도 가능합니다"},
+{zh:"一共三万韩元",ko:"총 3만 원입니다"},
+
+// 약
+{zh:"请去药房",ko:"약국으로 가세요"},
+{zh:"这是您的药",ko:"여기 약입니다"},
+
+// 마무리
+{zh:"需要复诊吗？",ko:"재진 필요하나요"},
+{zh:"请按时来",ko:"시간 맞춰 오세요"},
+{zh:"祝您早日康复",ko:"빨리 회복하세요"},
+{zh:"谢谢",ko:"감사합니다"},
+{zh:"不客气",ko:"천만에요"},
+{zh:"再见",ko:"안녕히 가세요"},
+{zh:"慢走",ko:"조심히 가세요"}
+
+];
+
+const container=document.getElementById("sentences");
+
+function speak(text){
+const msg=new SpeechSynthesisUtterance(text);
+msg.lang='zh-CN';
+speechSynthesis.speak(msg);
+}
+
+function repeatSpeak(text,count=3){
+let i=0;
+function loop(){
+if(i<count){
+const msg=new SpeechSynthesisUtterance(text);
+msg.lang='zh-CN';
+msg.onend=()=>{
+i++;
+loop();
+};
+speechSynthesis.speak(msg);
+}}
+loop();
+}
+
+data.forEach((item,i)=>{
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<div class="chinese">${i+1}. ${item.zh}</div>
+<div class="korean">${item.ko}</div>
+
+<div class="controls">
+<button class="play">듣기</button>
+<button class="repeat">다시 듣기</button>
+<button class="loop">3번 반복</button>
+</div>
+`;
+
+card.querySelector(".play").onclick=()=>speak(item.zh);
+card.querySelector(".repeat").onclick=()=>speak(item.zh);
+card.querySelector(".loop").onclick=()=>repeatSpeak(item.zh,3);
+
+container.appendChild(card);
+});
+
+</script>
+
+</body>
+</html>
